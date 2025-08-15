@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — Employees, Attendance, Payroll, Reports</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer type="module" src="../js/index.js"></script>
+  <style>
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa',
+              500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script>window.baseApiUrl = `${location.origin}/intro/api`;</script>
+</head>
+  <body class="bg-gray-50 min-h-screen">
+  <div id="app-shell" class="h-screen flex overflow-hidden">
+    <aside class="w-64 bg-primary-700 text-white flex-shrink-0 fixed inset-y-0 overflow-y-auto z-30">
+      <div class="h-14 flex items-center px-4 text-base font-semibold tracking-wide border-b border-primary-600">
+        <span class="cursor-default select-none">Admin Dashboard</span>
+      </div>
+      <nav class="px-2 py-3 space-y-1 text-sm">
+        <a href="#dashboard" class="block px-3 py-2 rounded hover:bg-primary-600">Dashboard</a>
+        <a href="#employees" class="block px-3 py-2 rounded hover:bg-primary-600">Employee Management</a>
+        <a href="#attendance" class="block px-3 py-2 rounded hover:bg-primary-600">Attendance Records</a>
+        <a href="#LeaveRequests" class="block px-3 py-2 rounded hover:bg-primary-600">Leave Management</a>
+        <a href="#payroll" class="block px-3 py-2 rounded hover:bg-primary-600">Payroll Management</a>
+        <a href="#reports" class="block px-3 py-2 rounded hover:bg-primary-600">Reports</a>
+        <button id="btn-logout" class="w-full text-left px-3 py-2 rounded hover:bg-primary-600">Logout</button>
+      </nav>
+    </aside>
+    <div class="flex-1 flex flex-col ml-64 h-screen">
+      <header class="h-14 flex items-center justify-end px-6 border-b bg-white sticky top-0 z-20">
+        <div class="relative">
+          <button id="profile-trigger" class="flex items-center gap-3">
+            <div id="profile-avatar" class="w-9 h-9 rounded-full bg-primary-600 text-white flex items-center justify-center text-sm font-semibold">A</div>
+            <div class="text-sm leading-tight text-left">
+              <div id="profile-name" class="font-medium">Admin</div>
+              <div id="profile-role" class="text-xs text-gray-500">admin</div>
+            </div>
+            <svg class="w-4 h-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/></svg>
+          </button>
+          <div id="profile-menu" class="hidden absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-10">
+            
+            <a href="#settings" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+              <svg class="w-4 h-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M11.983 1.705a1 1 0 00-1.966 0l-.155.933a6.993 6.993 0 00-1.61.933l-.86-.497a1 1 0 00-1.366.366l-.982 1.7a1 1 0 00.366 1.366l.86.497a6.99 6.99 0 000 1.866l-.86.497a1 1 0 00-.366 1.366l.982 1.7a1 1 0 001.366.366l.86-.497c .5 .38 1.038 .694 1.61 .933l .155 .933a1 1 0 001.966 0l .155-.933a6.993 6.993 0 001.61-.933l .86 .497a1 1 0 001.366-.366l .982-1.7a1 1 0 00-.366-1.366l-.86-.497a6.99 6.99 0 000-1.866l .86-.497a1 1 0 00 .366-1.366l-.982-1.7a1 1 0 00-1.366-.366l-.86 .497a6.993 6.993 0 00-1.61-.933l-.155-.933zM10 13a3 3 0 110-6 3 3 0 010 6z" clip-rule="evenodd"/>
+              </svg>
+              <span>Settings</span>
+            </a>
+            <button id="header-logout" class="w-full text-left flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-gray-50">
+              <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M3 4a2 2 0 012-2h6a2 2 0 012 2v3a1 1 0 11-2 0V4H5v12h6v-3a1 1 0 112 0v3a2 2 0 01-2 2H5a2 2 0 01-2-2V4zm11.293 3.293a1 1 0 011.414 1.414L14.414 10H9a1 1 0 100 2h5.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3z" clip-rule="evenodd"/>
+              </svg>
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+      </header>
+      <main class="p-6 flex-1 overflow-y-auto">
+        <div id="app"></div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
+
+
+

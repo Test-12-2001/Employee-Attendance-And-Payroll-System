@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employee Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script defer type="module" src="../js/employee.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { primary: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a' } } } } };
+    window.baseApiUrl = `${location.origin}/intro/api`;
+  </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <header class="bg-white border-b sticky top-0 z-20">
+    <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+      <div class="font-semibold">Employee Dashboard</div>
+      <div class="flex items-center gap-4">
+        <div class="relative">
+          <button id="notif-toggle" class="relative inline-flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-100" aria-label="Notifications">
+            <span class="sr-only">Notifications</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-gray-700">
+              <path d="M12 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 006 14h12a1 1 0 00.707-1.707L18 11.586V8a6 6 0 00-6-6zm0 20a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+            </svg>
+            <span id="notif-badge" class="absolute -top-1 -right-1 px-1.5 text-xs bg-red-500 text-white rounded-full hidden">0</span>
+          </button>
+          <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white border rounded-md shadow-lg z-50">
+            <div class="py-2">
+              <div class="px-4 py-2 text-sm font-semibold">Notifications</div>
+              <div id="notif-list" class="max-h-80 overflow-auto"></div>
+              <div class="px-4 py-2 text-xs text-gray-500 border-t flex items-center justify-between">
+                <button id="notif-mark-all" class="text-blue-600 hover:underline">Mark all as read</button>
+                <button id="notif-close" class="text-gray-600 hover:underline">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button id="emp-logout" class="text-sm text-red-600">Logout</button>
+      </div>
+    </div>
+  </header>
+  <main class="max-w-6xl mx-auto p-4">
+    <div id="emp-app"></div>
+  </main>
+</body>
+</html>
+
+
